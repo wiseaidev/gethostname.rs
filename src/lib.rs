@@ -26,6 +26,9 @@
 
 use std::ffi::OsString;
 
+#[cfg(target_arch = "wasm32")]
+use web_sys::window;
+
 /// Get the standard host name for the current machine.
 ///
 /// On Unix simply wrap POSIX [gethostname] in a safe interface.  On Windows
@@ -55,6 +58,17 @@ use std::ffi::OsString;
 /// [new]: https://github.com/swsnr/gethostname.rs/issues/new
 pub fn gethostname() -> OsString {
     gethostname_impl()
+}
+
+#[cfg(target_arch = "wasm32")]
+#[inline]
+fn gethostname_impl() -> OsString {
+    let window = window().expect("no global `window` exists");
+    let location = window.location();
+    let hostname = location
+        .hostname()
+        .unwrap_or_else(|_| String::from("unknown"));
+    OsString::from(hostname)
 }
 
 #[cfg(unix)]

@@ -18,3 +18,9 @@ libc = "0.2.141"
 
 [target.'cfg(windows)'.dependencies]
 windows-targets = "0.52.4"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-sys = { version = "0.3.69", features = ["Window", "Location"] }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3.42"
